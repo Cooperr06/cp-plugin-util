@@ -1,5 +1,4 @@
 # Project exclude paths
 /target/
-# IDE
 .idea/
 cp-plugin-util.iml
