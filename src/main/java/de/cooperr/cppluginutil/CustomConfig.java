@@ -9,12 +9,21 @@ import java.io.File;
 import java.io.IOException;
 import java.util.logging.Level;
 
+/**
+ * Custom config with variable file(-name)
+ */
 public class CustomConfig extends YamlConfiguration {
     
     private final PaperPlugin plugin;
     @Getter
     private final File file;
     
+    /**
+     * Creates a config for the plugin with the specific file
+     *
+     * @param plugin plugin to which the config belongs
+     * @param file   file which represents the config
+     */
     public CustomConfig(@NotNull PaperPlugin plugin, @NotNull File file) {
         this.plugin = plugin;
         this.file = file;

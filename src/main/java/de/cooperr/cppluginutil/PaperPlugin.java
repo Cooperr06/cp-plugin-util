@@ -4,6 +4,9 @@ import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Represents the java plugin with some utility methods
+ */
 public abstract class PaperPlugin extends JavaPlugin {
     
     /**
@@ -39,6 +42,7 @@ public abstract class PaperPlugin extends JavaPlugin {
      * Registers the listener to the plugin
      *
      * @param listener listener to be registered
+     * @param <T>      event type
      */
     public <T extends Event> void registerListener(@NotNull PaperListener<T> listener) {
         getServer().getPluginManager().registerEvents(listener, this);

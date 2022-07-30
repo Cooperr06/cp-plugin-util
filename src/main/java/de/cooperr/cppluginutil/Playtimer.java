@@ -12,6 +12,9 @@ import org.jetbrains.annotations.NotNull;
 
 import java.time.Duration;
 
+/**
+ * Timer for all players on the server
+ */
 public class Playtimer {
     
     private final JavaPlugin plugin;
@@ -24,6 +27,11 @@ public class Playtimer {
     @Getter
     private long time = 0;
     
+    /**
+     * Sets the default value for the timer
+     *
+     * @param plugin plugin to which the timer task belongs to
+     */
     public Playtimer(@NotNull JavaPlugin plugin) {
         this.plugin = plugin;
         

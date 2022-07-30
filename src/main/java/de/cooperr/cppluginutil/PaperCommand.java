@@ -6,10 +6,18 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabExecutor;
 import org.jetbrains.annotations.NotNull;
 
+/**
+ * Custom command which has some utility methods
+ */
 public abstract class PaperCommand implements TabExecutor {
     
     protected final PaperPlugin plugin;
     
+    /**
+     * Registers the command to the plugin
+     *
+     * @param plugin plugin to register the command to
+     */
     public PaperCommand(@NotNull PaperPlugin plugin) {
         this.plugin = plugin;
         
