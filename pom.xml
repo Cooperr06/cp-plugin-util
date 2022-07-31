@@ -101,9 +101,16 @@
                 <extensions>true</extensions>
                 <configuration>
                     <serverId>ossrh</serverId>
-                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
                     <autoReleaseAfterClose>false</autoReleaseAfterClose>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>xpp3</groupId>
+                        <artifactId>xpp3</artifactId>
+                        <version>1.1.4c</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
