@@ -46,11 +46,6 @@ public class DatabaseConnector {
         testDataSource(dataSource);
     }
     
-    /**
-     * Tests the database connection
-     *
-     * @param dataSource datasource to test
-     */
     private void testDataSource(DataSource dataSource) {
         try (Connection conn = dataSource.getConnection()) {
             if (!conn.isValid(1000)) {
@@ -62,12 +57,6 @@ public class DatabaseConnector {
         }
     }
     
-    /**
-     * Executes an sql file
-     *
-     * @param file file to execute
-     * @return whether an error occurred or not
-     */
     public boolean executeSqlFile(@NotNull File file) {
         String setup;
         
