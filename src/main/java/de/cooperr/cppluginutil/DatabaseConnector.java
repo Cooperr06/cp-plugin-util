@@ -17,12 +17,22 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
+/**
+ * Database connector for MySQL
+ */
 @Getter
 public class DatabaseConnector {
     
     private final MysqlDataSource dataSource = new MysqlConnectionPoolDataSource();
     private final PaperPlugin plugin;
     
+    /**
+     * @param host     address to the database
+     * @param port     port to connect
+     * @param database database to use
+     * @param user     user to be used for login
+     * @param password password to be used for login
+     */
     public DatabaseConnector(@NotNull PaperPlugin plugin, @Nullable String host, @Nullable Integer port, @NotNull String database,
                              @NotNull String user, @NotNull String password) {
         this.plugin = plugin;
@@ -36,6 +46,11 @@ public class DatabaseConnector {
         testDataSource(dataSource);
     }
     
+    /**
+     * Tests the database connection
+     *
+     * @param dataSource datasource to test
+     */
     private void testDataSource(DataSource dataSource) {
         try (Connection conn = dataSource.getConnection()) {
             if (!conn.isValid(1000)) {
@@ -47,6 +62,12 @@ public class DatabaseConnector {
         }
     }
     
+    /**
+     * Executes an sql file
+     *
+     * @param file file to execute
+     * @return whether an error occurred or not
+     */
     public boolean executeSqlFile(@NotNull File file) {
         String setup;
         
