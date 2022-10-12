@@ -9,6 +9,8 @@ import org.jetbrains.annotations.NotNull;
  */
 public abstract class PaperPlugin extends JavaPlugin {
     
+    protected CustomConfig config;
+    
     /**
      * Registers all commands by instantiating every {@link PaperCommand}.
      * Should only be overridden if plugin has commands
@@ -46,5 +48,25 @@ public abstract class PaperPlugin extends JavaPlugin {
      */
     public <T extends Event> void registerListener(@NotNull PaperListener<T> listener) {
         getServer().getPluginManager().registerEvents(listener, this);
+    }
+    
+    /**
+     * Returns the custom config of this plugin
+     *
+     * @return custom config of this plugin
+     * @see CustomConfig
+     */
+    public @NotNull CustomConfig getCustomConfig() {
+        return config;
+    }
+    
+    /**
+     * Saves the custom config of this plugin
+     *
+     * @see CustomConfig#save()
+     */
+    @Override
+    public void saveConfig() {
+        config.save();
     }
 }
