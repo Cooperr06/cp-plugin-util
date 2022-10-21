@@ -28,6 +28,7 @@ public class CustomConfig extends YamlConfiguration {
         this.plugin = plugin;
         this.file = file;
         
+        save();
         try {
             load(file);
         } catch (IOException | InvalidConfigurationException e) {
