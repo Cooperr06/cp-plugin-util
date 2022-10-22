@@ -27,8 +27,16 @@ public class CustomConfig extends YamlConfiguration {
     public CustomConfig(@NotNull PaperPlugin plugin, @NotNull File file) {
         this.plugin = plugin;
         this.file = file;
-        
-        save();
+    
+        if (!file.exists()) {
+            file.mkdirs();
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                plugin.getLogger().log(Level.SEVERE, String.format("Failed to create config \"%s\"", file.getName()), e);
+            }
+        }
+    
         try {
             load(file);
         } catch (IOException | InvalidConfigurationException e) {
