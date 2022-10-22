@@ -1,6 +1,7 @@
 package de.cooperr.cppluginutil;
 
 import lombok.Getter;
+import org.apache.commons.io.FileUtils;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.jetbrains.annotations.NotNull;
@@ -28,13 +29,10 @@ public class CustomConfig extends YamlConfiguration {
         this.plugin = plugin;
         this.file = file;
     
-        if (!file.exists()) {
-            file.mkdirs();
-            try {
-                file.createNewFile();
-            } catch (IOException e) {
-                plugin.getLogger().log(Level.SEVERE, String.format("Failed to create config \"%s\"", file.getName()), e);
-            }
+        try {
+            FileUtils.touch(file);
+        } catch (IOException e) {
+            plugin.getLogger().log(Level.SEVERE, String.format("Failed to create config \"%s\"", file.getName()), e);
         }
     
         try {
