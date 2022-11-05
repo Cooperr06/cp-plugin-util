@@ -8,16 +8,16 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Custom listener which has some utility methods
  */
-public abstract class PaperListener<T extends Event> implements Listener {
+public abstract class PaperListener<T1 extends PaperPlugin, T2 extends Event> implements Listener {
     
-    protected final PaperPlugin plugin;
+    protected final T1 plugin;
     
     /**
      * Registers the listener to the plugin
      *
      * @param plugin plugin to register the listener to
      */
-    public PaperListener(@NotNull PaperPlugin plugin) {
+    public PaperListener(@NotNull T1 plugin) {
         this.plugin = plugin;
         
         plugin.registerListener(this);
@@ -29,5 +29,5 @@ public abstract class PaperListener<T extends Event> implements Listener {
      * @param event event to handle
      */
     @EventHandler
-    public abstract void onEvent(T event);
+    public abstract void onEvent(T2 event);
 }

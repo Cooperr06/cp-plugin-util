@@ -6,7 +6,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.title.Title;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,7 +16,7 @@ import java.time.Duration;
  */
 public class Playtimer {
     
-    private final JavaPlugin plugin;
+    private final PaperPlugin plugin;
     
     @Getter
     private BukkitTask task;
@@ -32,7 +31,7 @@ public class Playtimer {
      *
      * @param plugin plugin to which the timer task belongs to
      */
-    public Playtimer(@NotNull JavaPlugin plugin) {
+    public Playtimer(@NotNull PaperPlugin plugin) {
         this.plugin = plugin;
         
         if (!plugin.getConfig().contains("timer")) {

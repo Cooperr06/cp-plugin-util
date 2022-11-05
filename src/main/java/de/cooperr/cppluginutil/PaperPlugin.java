@@ -30,10 +30,10 @@ public abstract class PaperPlugin extends JavaPlugin {
      *
      * @param command command to be registered
      */
-    public void registerCommand(@NotNull PaperCommand command) {
+    public <T extends PaperPlugin> void registerCommand(@NotNull PaperCommand<T> command) {
         var pluginCommand = getCommand(command.getCommandName());
         if (pluginCommand == null) {
-            getLogger().severe(String.format("Failed to register command \"%s\"", command.getCommandName()));
+            getLogger().severe("Failed to register command \"%s\"".formatted(command.getCommandName()));
             getServer().getPluginManager().disablePlugin(this);
         } else {
             pluginCommand.setExecutor(command);
@@ -44,9 +44,10 @@ public abstract class PaperPlugin extends JavaPlugin {
      * Registers the listener to the plugin
      *
      * @param listener listener to be registered
-     * @param <T>      event type
+     * @param <T1>     plugin
+     * @param <T2>     event type
      */
-    public <T extends Event> void registerListener(@NotNull PaperListener<T> listener) {
+    public <T1 extends PaperPlugin, T2 extends Event> void registerListener(@NotNull PaperListener<T1, T2> listener) {
         getServer().getPluginManager().registerEvents(listener, this);
     }
     

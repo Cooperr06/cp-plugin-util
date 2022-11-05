@@ -9,16 +9,16 @@ import org.jetbrains.annotations.NotNull;
 /**
  * Custom command which has some utility methods
  */
-public abstract class PaperCommand implements TabExecutor {
+public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor {
     
-    protected final PaperPlugin plugin;
+    protected final T plugin;
     
     /**
      * Registers the command to the plugin
      *
      * @param plugin plugin to register the command to
      */
-    public PaperCommand(@NotNull PaperPlugin plugin) {
+    public PaperCommand(@NotNull T plugin) {
         this.plugin = plugin;
         
         plugin.registerCommand(this);

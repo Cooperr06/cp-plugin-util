@@ -11,7 +11,6 @@ import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -21,10 +20,10 @@ import java.util.logging.Level;
  * Database connector for MySQL
  */
 @Getter
-public class DatabaseConnector {
+public class DatabaseConnector<T extends PaperPlugin> {
     
     private final MysqlDataSource dataSource = new MysqlConnectionPoolDataSource();
-    private final PaperPlugin plugin;
+    private final T plugin;
     
     /**
      * @param host     address to the database
@@ -33,7 +32,7 @@ public class DatabaseConnector {
      * @param user     user to be used for login
      * @param password password to be used for login
      */
-    public DatabaseConnector(@NotNull PaperPlugin plugin, @Nullable String host, @Nullable Integer port, @NotNull String database,
+    public DatabaseConnector(@NotNull T plugin, @Nullable String host, @Nullable Integer port, @NotNull String database,
                              @NotNull String user, @NotNull String password) {
         this.plugin = plugin;
         
@@ -47,7 +46,7 @@ public class DatabaseConnector {
     }
     
     private void testDataSource(DataSource dataSource) {
-        try (Connection conn = dataSource.getConnection()) {
+        try (var conn = dataSource.getConnection()) {
             if (!conn.isValid(1000)) {
                 throw new SQLException();
             }
@@ -59,8 +58,8 @@ public class DatabaseConnector {
     
     public boolean executeSqlFile(@NotNull File file) {
         String setup;
-        
-        try (InputStream in = new FileInputStream(file)) {
+    
+        try (FileInputStream in = new FileInputStream(file)) {
             setup = new String(in.readAllBytes());
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Could not read SQL file \"%s\"".formatted(file.getAbsolutePath()), e);

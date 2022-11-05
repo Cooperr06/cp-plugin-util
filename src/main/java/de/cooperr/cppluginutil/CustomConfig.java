@@ -32,13 +32,13 @@ public class CustomConfig extends YamlConfiguration {
         try {
             FileUtils.touch(file);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, String.format("Failed to create config \"%s\"", file.getName()), e);
+            plugin.getLogger().log(Level.SEVERE, "Failed to create config \"%s\"".formatted(file.getName()), e);
         }
     
         try {
             load(file);
         } catch (IOException | InvalidConfigurationException e) {
-            plugin.getLogger().log(Level.SEVERE, String.format("Failed to load config \"%s\"", file.getName()), e);
+            plugin.getLogger().log(Level.SEVERE, "Failed to load config \"%s\"".formatted(file.getName()), e);
             plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
     }
@@ -64,7 +64,7 @@ public class CustomConfig extends YamlConfiguration {
         try {
             save(file);
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, String.format("Failed to save config \"%s\"", file.getName()), e);
+            plugin.getLogger().log(Level.SEVERE, "Failed to save config \"%s\"".formatted(file.getName()), e);
             plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
     }
