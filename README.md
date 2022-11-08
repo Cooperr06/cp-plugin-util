@@ -7,6 +7,6 @@ This repository is my personal Minecraft plugin framework.
 <dependency>
   <groupId>de.cooperr</groupId>
   <artifactId>cp-plugin-util</artifactId>
-  <version>1.0</version>
+  <version>VERSION</version>
 </dependency>
 ```
