@@ -1,8 +1,12 @@
 package de.cooperr.cppluginutil;
 
 import org.bukkit.event.Event;
+import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.java.JavaPluginLoader;
 import org.jetbrains.annotations.NotNull;
+
+import java.io.File;
 
 /**
  * Represents the java plugin with some utility methods
@@ -12,15 +16,22 @@ public abstract class PaperPlugin extends JavaPlugin {
     protected CustomConfig config;
     
     /**
-     * Registers all commands by instantiating every {@link PaperCommand}.
-     * Should only be overridden if plugin has commands
+     * Constructor for using <a href="https://github.com/MockBukkit/MockBukkit">MockBukkit</a>
+     */
+    protected PaperPlugin(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
+        super(loader, description, dataFolder, file);
+    }
+    
+    /**
+     * Registers all commands by instantiating every {@link PaperCommand}.<br>
+     * Register a new command via calling its constructor.
      */
     protected void commandRegistration() {
     }
     
     /**
-     * Registers all commands by instantiating every {@link PaperListener}.
-     * Should only be overridden if plugin has commands
+     * Registers all listeners by instantiating every {@link PaperListener}.<br>
+     * Register a new listener via calling its constructor.
      */
     protected void listenerRegistration() {
     }
