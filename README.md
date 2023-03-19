@@ -10,3 +10,4 @@ This repository is my personal Minecraft plugin framework.
   <version>VERSION</version>
 </dependency>
 ```
+--> latest Version: ![Version](https://img.shields.io/maven-central/v/de.cooperr/cp-plugin-util)
