@@ -8,15 +8,17 @@ import org.jetbrains.annotations.NotNull;
 
 /**
  * Custom command which has some utility methods
+ *
+ * @param <T> plugin to which this command should belong
  */
 public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor {
     
     protected final T plugin;
-    
+
     /**
      * Registers the command to the plugin
      *
-     * @param plugin plugin to register the command to
+     * @param plugin plugin to which the command should belong
      */
     public PaperCommand(@NotNull T plugin) {
         this.plugin = plugin;

@@ -1,6 +1,5 @@
 package de.cooperr.cppluginutil;
 
-import lombok.Getter;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -14,30 +13,23 @@ import java.time.Duration;
 /**
  * Timer for all players on the server
  */
-public class Playtimer {
-    
-    private final PaperPlugin plugin;
-    
-    @Getter
+public class Playtimer<T extends PaperPlugin> {
+
+    private final T plugin;
+
     private BukkitTask task;
-    
-    @Getter
     private boolean running = false;
-    @Getter
     private long time = 0;
-    
+
     /**
      * Sets the default value for the timer
      *
      * @param plugin plugin to which the timer task belongs to
      */
-    public Playtimer(@NotNull PaperPlugin plugin) {
+    public Playtimer(@NotNull T plugin) {
         this.plugin = plugin;
-        
-        if (!plugin.getConfig().contains("timer")) {
-            plugin.getConfig().set("timer", 0);
-            plugin.getLogger().info("Default value set for timer in config");
-        }
+
+        plugin.getCustomConfig().addDefault("timer.time", 0);
     }
     
     /**
@@ -48,9 +40,9 @@ public class Playtimer {
         if (running) {
             return;
         }
-        
+
         running = true;
-        time = plugin.getConfig().getInt("timer.time");
+        time = plugin.getCustomConfig().getInt("timer.time");
         
         plugin.getServer().broadcast(Component.text("Timer started!", NamedTextColor.GOLD, TextDecoration.BOLD));
         
@@ -83,8 +75,8 @@ public class Playtimer {
             Component.text("Timer", NamedTextColor.GOLD, TextDecoration.BOLD),
             Component.text("started", NamedTextColor.RED, TextDecoration.BOLD),
             Title.Times.times(Duration.ofMillis(750), Duration.ofMillis(1250), Duration.ofMillis(750))));
-        
-        plugin.getConfig().set("timer.time", reset ? 0 : time);
+
+        plugin.getCustomConfig().setAndSave("timer.time", reset ? 0 : time);
         time = 0;
     }
     
@@ -120,10 +112,18 @@ public class Playtimer {
             days++;
             hours -= 24;
         }
-        
+
         return Component.text((days == 0 ? "" : days + "d ") +
-            (hours == 0 ? "" : hours + "h ") +
-            (minutes == 0 ? "" : minutes + "m ") +
-            seconds + "s", NamedTextColor.GOLD, TextDecoration.BOLD);
+                (hours == 0 ? "" : hours + "h ") +
+                (minutes == 0 ? "" : minutes + "m ") +
+                seconds + "s", NamedTextColor.GOLD, TextDecoration.BOLD);
+    }
+
+    public boolean isRunning() {
+        return running;
+    }
+
+    public long getTime() {
+        return time;
     }
 }
