@@ -31,55 +31,55 @@ public class Playtimer<T extends PaperPlugin> {
 
         plugin.getCustomConfig().addDefault("timer.time", 0);
     }
-    
+
     /**
      * Starts the timer if it is running
      */
     public void start() {
-        
+
         if (running) {
             return;
         }
 
         running = true;
         time = plugin.getCustomConfig().getInt("timer.time");
-        
+
         plugin.getServer().broadcast(Component.text("Timer started!", NamedTextColor.GOLD, TextDecoration.BOLD));
-        
+
         plugin.getServer().showTitle(Title.title(
-            Component.text("Timer", NamedTextColor.GOLD, TextDecoration.BOLD),
-            Component.text("started", NamedTextColor.GREEN, TextDecoration.BOLD),
-            Title.Times.times(Duration.ofMillis(750), Duration.ofMillis(1250), Duration.ofMillis(750))));
-        
+                Component.text("Timer", NamedTextColor.GOLD, TextDecoration.BOLD),
+                Component.text("started", NamedTextColor.GREEN, TextDecoration.BOLD),
+                Title.Times.times(Duration.ofMillis(750), Duration.ofMillis(1250), Duration.ofMillis(750))));
+
         task = plugin.getServer().getScheduler().runTaskTimer(plugin, () -> plugin.getServer().sendActionBar(formatTime(++time)), 20, 20);
     }
-    
+
     /**
      * Stops the timer if it is running and saves or resets the time
      *
      * @param reset whether to reset the time
      */
     public void stop(boolean reset) {
-        
+
         if (!running) {
             return;
         }
-        
+
         task.cancel();
         running = false;
-        
+
         plugin.getServer().broadcast(Component.text("Timer stopped! Your time is " + formatTime(time) + "!",
-            NamedTextColor.GOLD, TextDecoration.BOLD));
-        
+                NamedTextColor.GOLD, TextDecoration.BOLD));
+
         plugin.getServer().showTitle(Title.title(
-            Component.text("Timer", NamedTextColor.GOLD, TextDecoration.BOLD),
-            Component.text("started", NamedTextColor.RED, TextDecoration.BOLD),
-            Title.Times.times(Duration.ofMillis(750), Duration.ofMillis(1250), Duration.ofMillis(750))));
+                Component.text("Timer", NamedTextColor.GOLD, TextDecoration.BOLD),
+                Component.text("started", NamedTextColor.RED, TextDecoration.BOLD),
+                Title.Times.times(Duration.ofMillis(750), Duration.ofMillis(1250), Duration.ofMillis(750))));
 
         plugin.getCustomConfig().setAndSave("timer.time", reset ? 0 : time);
         time = 0;
     }
-    
+
     /**
      * Formats the given time to a fancy text component
      * e. g.:
@@ -99,7 +99,7 @@ public class Playtimer<T extends PaperPlugin> {
         var minutes = 0;
         var hours = 0;
         var days = 0;
-        
+
         while (seconds >= 60) {
             minutes++;
             seconds -= 60;

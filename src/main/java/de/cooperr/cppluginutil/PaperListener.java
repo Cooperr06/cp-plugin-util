@@ -11,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <T2> event to which this listener should listen
  */
 public abstract class PaperListener<T1 extends PaperPlugin, T2 extends Event> implements Listener {
-    
+
     protected final T1 plugin;
 
     /**
@@ -21,7 +21,7 @@ public abstract class PaperListener<T1 extends PaperPlugin, T2 extends Event> im
      */
     public PaperListener(@NotNull T1 plugin) {
         this.plugin = plugin;
-        
+
         plugin.registerListener(this);
     }
 

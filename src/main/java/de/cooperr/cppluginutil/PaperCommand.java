@@ -12,7 +12,7 @@ import org.jetbrains.annotations.NotNull;
  * @param <T> plugin to which this command should belong
  */
 public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor {
-    
+
     protected final T plugin;
 
     /**
@@ -22,10 +22,10 @@ public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor
      */
     public PaperCommand(@NotNull T plugin) {
         this.plugin = plugin;
-        
+
         plugin.registerCommand(this);
     }
-    
+
     /**
      * Sends the intended usage of this command to a sender
      *
@@ -35,7 +35,7 @@ public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor
     protected void sendCommandUsage(@NotNull CommandSender sender) {
         sender.sendMessage(Component.text(String.format("Usage: %s", getCommandUsage()), NamedTextColor.DARK_RED));
     }
-    
+
     /**
      * Sends a message to the sender that a player is required
      *
@@ -44,7 +44,7 @@ public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor
     protected void sendWrongSenderMessage(@NotNull CommandSender sender) {
         sender.sendMessage(Component.text("You have to be a player to use this command!", NamedTextColor.DARK_RED));
     }
-    
+
     /**
      * Sends an error message to the sender
      *
@@ -54,13 +54,13 @@ public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor
     protected void sendErrorMessage(@NotNull CommandSender sender, @NotNull String message) {
         sender.sendMessage(Component.text(message, NamedTextColor.DARK_RED));
     }
-    
+
     /**
      * @return command name in lower case
      */
     @NotNull
     public abstract String getCommandName();
-    
+
     /**
      * @return intended command usage (incl. '/')
      */
