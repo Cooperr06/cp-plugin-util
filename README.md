@@ -3,7 +3,7 @@
 This repository is my personal Minecraft plugin framework.
 
 ## Use dependency
-```
+```xml
 <dependency>
   <groupId>de.cooperr</groupId>
   <artifactId>cp-plugin-util</artifactId>
