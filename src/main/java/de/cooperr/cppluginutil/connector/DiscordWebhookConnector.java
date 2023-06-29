@@ -1,5 +1,6 @@
-package de.cooperr.cppluginutil;
+package de.cooperr.cppluginutil.connector;
 
+import de.cooperr.cppluginutil.base.PaperPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
@@ -11,12 +12,10 @@ import java.util.logging.Level;
 
 /**
  * Connects Java with Discord Webhooks
- *
- * @param <T> plugin to which this connector should belong
  */
-public class DiscordWebhook<T extends PaperPlugin> {
+public class DiscordWebhookConnector {
 
-    private final T plugin;
+    private final PaperPlugin plugin;
 
     private URL webhookUrl;
 
@@ -26,7 +25,7 @@ public class DiscordWebhook<T extends PaperPlugin> {
      * @param plugin     plugin to which this connector should belong
      * @param webhookUrl url to the Discord Webhook
      */
-    public DiscordWebhook(@NotNull T plugin, @NotNull String webhookUrl) {
+    public DiscordWebhookConnector(@NotNull PaperPlugin plugin, @NotNull String webhookUrl) {
         this.plugin = plugin;
         try {
             this.webhookUrl = new URL(webhookUrl);
@@ -42,7 +41,7 @@ public class DiscordWebhook<T extends PaperPlugin> {
      *
      * @param message message to send
      */
-    public void send(String message) {
+    public void send(@NotNull String message) {
         plugin.getServer().getScheduler().runTaskAsynchronously(plugin, () -> {
             try {
                 var connection = (HttpURLConnection) webhookUrl.openConnection();
@@ -66,7 +65,8 @@ public class DiscordWebhook<T extends PaperPlugin> {
         });
     }
 
-    public URL getWebhookUrl() {
+    @NotNull
+    public URL webhookUrl() {
         return webhookUrl;
     }
 }

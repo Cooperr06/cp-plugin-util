@@ -1,4 +1,4 @@
-package de.cooperr.cppluginutil;
+package de.cooperr.cppluginutil.base;
 
 import org.bukkit.event.Event;
 import org.bukkit.event.Listener;
@@ -30,5 +30,5 @@ public abstract class PaperListener<T1 extends PaperPlugin, T2 extends Event> im
      *
      * @param event event to handle
      */
-    public abstract void onEvent(T2 event);
+    public abstract void onEvent(@NotNull T2 event);
 }

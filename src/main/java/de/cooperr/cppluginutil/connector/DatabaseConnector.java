@@ -1,16 +1,15 @@
-package de.cooperr.cppluginutil;
+package de.cooperr.cppluginutil.connector;
 
 import com.mysql.cj.conf.ConnectionUrl;
 import com.mysql.cj.jdbc.MysqlConnectionPoolDataSource;
 import com.mysql.cj.jdbc.MysqlDataSource;
+import de.cooperr.cppluginutil.base.PaperPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.sql.DataSource;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 
@@ -42,17 +41,35 @@ public class DatabaseConnector {
         dataSource.setUser(user);
         dataSource.setPassword(password);
 
-        testDataSource(dataSource);
+        testDataSource();
     }
 
-    private void testDataSource(DataSource dataSource) {
+    public void testDataSource() {
         try (var connection = dataSource.getConnection()) {
             if (!connection.isValid(1000)) {
                 throw new SQLException();
             }
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not establish database connection", e);
+            plugin.getLogger().log(Level.SEVERE, "Failed to connect to database", e);
             plugin.getServer().getPluginManager().disablePlugin(plugin);
+        }
+    }
+
+    /**
+     * Executes a sql command
+     *
+     * @param sql  sql command
+     * @param args arguments for the command
+     */
+    public void executeSql(@NotNull String sql, @Nullable Object... args) {
+        try (var connection = dataSource.getConnection();
+             var statement = connection.prepareStatement(sql)) {
+            for (int i = 0; i < args.length; i++) {
+                statement.setObject(i, args);
+            }
+            statement.execute();
+        } catch (SQLException e) {
+            plugin.getLogger().log(Level.SEVERE, "Failed to execute sql script \"%s\" with args \"%s\"".formatted(sql, args), e);
         }
     }
 
@@ -60,49 +77,32 @@ public class DatabaseConnector {
      * Executes a sql file
      *
      * @param file sql file which will be executed
-     * @return result set or null, if an error occurred or there is no result
      */
-    @Nullable
-    public ResultSet executeSqlFile(@NotNull File file) {
+    public void executeSqlFile(@NotNull File file) {
         var setup = "";
-
         try (var inputStream = new FileInputStream(file)) {
             setup = new String(inputStream.readAllBytes());
         } catch (IOException e) {
-            plugin.getLogger().log(Level.SEVERE, "Could not read sql file \"%s\"".formatted(file.getAbsolutePath()), e);
-            return null;
+            plugin.getLogger().log(Level.SEVERE, "Failed to read sql file \"%s\"".formatted(file.getName()), e);
+        }
+
+        if (setup.split(";").length > 1) {
+            for (var command : setup.split(";")) {
+                executeSql(command);
+            }
+            return;
         }
 
         try (var connection = dataSource.getConnection();
              var statement = connection.prepareStatement(setup)) {
-            if (statement.execute()) {
-                return statement.getResultSet();
-            }
+            statement.execute();
         } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to execute sql file \"%s\"".formatted(file.getAbsolutePath()), e);
-            return null;
+            plugin.getLogger().log(Level.SEVERE, "Failed to execute sql file \"%s\"".formatted(file.getName()), e);
         }
-        return null;
-    }
-
-    public ResultSet executeSql(String sql, @Nullable Object... args) {
-        try (var connection = dataSource.getConnection();
-             var statement = connection.prepareStatement(sql)) {
-            for (int i = 0; i < args.length; i++) {
-                statement.setObject(i, args);
-            }
-            if (statement.execute()) {
-                return statement.getResultSet();
-            }
-        } catch (SQLException e) {
-            plugin.getLogger().log(Level.SEVERE, "Failed to execute sql script \"%s\" with args \"%s\"".formatted(sql, args), e);
-            return null;
-        }
-        return null;
     }
 
     @NotNull
-    public MysqlDataSource getDataSource() {
+    public MysqlDataSource dataSource() {
         return dataSource;
     }
 }

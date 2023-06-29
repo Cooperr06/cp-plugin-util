@@ -1,5 +1,6 @@
-package de.cooperr.cppluginutil;
+package de.cooperr.cppluginutil.util;
 
+import de.cooperr.cppluginutil.base.PaperPlugin;
 import org.apache.commons.io.FileUtils;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -91,7 +92,7 @@ public class CustomConfig extends YamlConfiguration {
      * @param value value to be set to the path
      * @see #save()
      */
-    public void setAndSave(String path, Object value) {
+    public void setAndSave(@NotNull String path, @Nullable Object value) {
         set(path, value);
         save();
     }
