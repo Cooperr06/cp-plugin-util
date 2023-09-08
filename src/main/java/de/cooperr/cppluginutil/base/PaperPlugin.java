@@ -1,13 +1,18 @@
 package de.cooperr.cppluginutil.base;
 
 import de.cooperr.cppluginutil.challenge.Challenge;
+import de.cooperr.cppluginutil.command.PaperCommand;
 import de.cooperr.cppluginutil.util.CustomConfig;
 import de.cooperr.cppluginutil.util.Localizer;
 import de.cooperr.cppluginutil.util.Timer;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+import javax.management.openmbean.InvalidKeyException;
+import javax.management.openmbean.KeyAlreadyExistsException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,24 +28,26 @@ public abstract class PaperPlugin extends JavaPlugin {
     protected Localizer localizer;
 
     /**
-     * Registers all challenges by instantiating every {@link Challenge}.<br>
-     * Register a new challenge via calling its constructor.
+     * Registers all challenges by instantiating every {@link Challenge}<br>
+     * Register a challenge by calling its constructor.
+     *
+     * @see Challenge#Challenge(PaperPlugin)
      */
     protected void challengeRegistration() {
     }
 
     /**
-     * Registers all commands by instantiating every {@link PaperCommand}.<br>
-     * Register a new command via calling its constructor.
+     * Registers all commands by instantiating every {@link PaperCommand}<br>
+     * Register a command by calling its constructor.
      *
-     * @see Challenge#Challenge(PaperPlugin)
+     * @see PaperCommand#PaperCommand(PaperPlugin)
      */
     protected void commandRegistration() {
     }
 
     /**
-     * Registers all listeners by instantiating every {@link PaperListener}.<br>
-     * Register a new listener via calling its constructor.
+     * Registers all listeners by instantiating every {@link PaperListener}<br>
+     * Register a listener by calling its constructor.
      *
      * @see PaperListener#PaperListener(PaperPlugin)
      */
@@ -52,9 +59,11 @@ public abstract class PaperPlugin extends JavaPlugin {
      *
      * @param challenge challenge to register
      * @param <T>       plugin to which the challenge should be registered
-     * @see PaperCommand#PaperCommand(PaperPlugin)
      */
     public <T extends PaperPlugin> void registerChallenge(@NotNull Challenge<T> challenge) {
+        if (challenges.stream().anyMatch(registeredChallenge -> registeredChallenge.name().equals(challenge.name()))) {
+            throw new KeyAlreadyExistsException("Challenge \"%s\" is already registered".formatted(challenge.name()));
+        }
         challenges.add(challenge);
     }
 
@@ -65,13 +74,11 @@ public abstract class PaperPlugin extends JavaPlugin {
      * @param <T>     plugin to which the command should be registered
      */
     public <T extends PaperPlugin> void registerCommand(@NotNull PaperCommand<T> command) {
-        var pluginCommand = getCommand(command.commandName());
+        var pluginCommand = getCommand(command.name());
         if (pluginCommand == null) {
-            getLogger().severe("Failed to register command \"%s\"".formatted(command.commandName()));
-            getServer().getPluginManager().disablePlugin(this);
-        } else {
-            pluginCommand.setExecutor(command);
+            throw new IllegalArgumentException("Failed to register command \"%s\"".formatted(command.name()));
         }
+        pluginCommand.setExecutor(command);
     }
 
     /**
@@ -95,6 +102,34 @@ public abstract class PaperPlugin extends JavaPlugin {
         config.save();
     }
 
+    /**
+     * Returns the reader for the resource file
+     *
+     * @param fileName file name of the resource (optionally with parent directories as well,<br>
+     *                 without {@code '.'} and {@code '/resources'})
+     * @return reader for the resource file
+     * @see JavaPlugin#getTextResource(String)
+     */
+    @NotNull
+    public Reader resourceReader(@NotNull String fileName) {
+        return getTextResource(fileName);
+    }
+
+    /**
+     * Gets a challenge by its unique name
+     *
+     * @param name name of the challenge
+     * @return challenge with the given name or null if there is no challenge with the given name
+     */
+    @NotNull
+    public Challenge<? extends PaperPlugin> challengeByName(@NotNull String name) {
+        var challengeOptional = challenges.stream().filter(challenge -> challenge.name().equals(name)).findFirst();
+        if (challengeOptional.isEmpty()) {
+            throw new InvalidKeyException("Challenge \"%s\" does not exist".formatted(name));
+        }
+        return challengeOptional.get();
+    }
+
     @NotNull
     public List<Challenge<? extends PaperPlugin>> activeChallenges() {
         return challenges.stream().filter(Challenge::active).toList();
@@ -105,14 +140,17 @@ public abstract class PaperPlugin extends JavaPlugin {
         return challenges;
     }
 
+    @Nullable
     public CustomConfig customConfig() {
         return config;
     }
 
+    @Nullable
     public Timer timer() {
         return timer;
     }
 
+    @Nullable
     public Localizer localizer() {
         return localizer;
     }

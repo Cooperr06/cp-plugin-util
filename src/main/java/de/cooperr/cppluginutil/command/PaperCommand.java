@@ -1,16 +1,14 @@
-package de.cooperr.cppluginutil.base;
+package de.cooperr.cppluginutil.command;
 
-import de.cooperr.cppluginutil.util.Localizer;
+import de.cooperr.cppluginutil.base.PaperPlugin;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabExecutor;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Locale;
 
 /**
  * Custom command which has some utility methods
@@ -36,15 +34,14 @@ public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor
      * Sends the intended usage of this command to a sender
      *
      * @param sender sender to send the message to
-     * @see #commandUsage()
+     * @see PluginCommand#getUsage()
      */
     protected void sendCommandUsage(@NotNull CommandSender sender) {
         if (plugin.localizer() == null) {
-            sender.sendMessage(Component.text(String.format("Usage: %s", commandUsage()), NamedTextColor.DARK_RED));
+            sender.sendMessage(Component.text(String.format("Usage: %s", plugin.getCommand(name()).getUsage()), NamedTextColor.DARK_RED));
         } else {
             var locale = sender instanceof Player ? ((Player) sender).locale() : null;
-            sender.sendMessage(plugin.localizer().localizeMessage("command.usage", locale,
-                    Component.text(commandUsage(), NamedTextColor.DARK_RED)));
+            sender.sendMessage(plugin.localizer().localizeMessage("command.usage", locale, plugin.getCommand(name()).getUsage()));
         }
     }
 
@@ -62,15 +59,23 @@ public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor
         }
     }
 
+    protected void sendNoPermissionMessage(@NotNull CommandSender sender) {
+        if (plugin.localizer() == null) {
+            sender.sendMessage(Component.text("You don't have the permission to use this command!", NamedTextColor.DARK_RED));
+        } else {
+            var locale = sender instanceof Player ? ((Player) sender).locale() : null;
+            sender.sendMessage(plugin.localizer().localizeMessage("command.no_permission", locale));
+        }
+    }
+
     /**
      * Sends an error message to the sender
      *
      * @param sender sender to send the message to
      * @param error  error key or if no localization should be used, the error message
      * @param args   arguments for localization
-     * @see Localizer#localizeMessage(String, Locale, TextComponent...)
      */
-    protected void sendErrorMessage(@NotNull CommandSender sender, @NotNull String error, @Nullable TextComponent... args) {
+    protected void sendErrorMessage(@NotNull CommandSender sender, @NotNull String error, @Nullable String... args) {
         if (plugin.localizer() == null) {
             sender.sendMessage(Component.text(error, NamedTextColor.DARK_RED));
         } else {
@@ -80,14 +85,8 @@ public abstract class PaperCommand<T extends PaperPlugin> implements TabExecutor
     }
 
     /**
-     * @return command name in lower case
+     * @return name of this command
      */
     @NotNull
-    public abstract String commandName();
-
-    /**
-     * @return intended command usage (incl. '/')
-     */
-    @NotNull
-    public abstract String commandUsage();
+    public abstract String name();
 }

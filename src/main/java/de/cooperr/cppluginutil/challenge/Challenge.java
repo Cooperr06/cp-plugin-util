@@ -24,6 +24,7 @@ public abstract class Challenge<T extends PaperPlugin> {
     public Challenge(@NotNull T plugin) {
         this.plugin = plugin;
 
+        plugin.registerChallenge(this);
         plugin.getServer().getPluginManager().registerEvents(goalListener(), plugin);
         if (failListener() != null) {
             plugin.getServer().getPluginManager().registerEvents(failListener(), plugin);
@@ -57,6 +58,11 @@ public abstract class Challenge<T extends PaperPlugin> {
      * Performs the actions if the challenge failed
      */
     public abstract void failed();
+
+    /**
+     * @return challenge name
+     */
+    public abstract String name();
 
     public boolean active() {
         return active;

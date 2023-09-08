@@ -5,8 +5,6 @@ import org.bukkit.event.Listener;
 import org.jetbrains.annotations.NotNull;
 
 /**
- * Custom listener which has some utility methods
- *
  * @param <T1> plugin to which this listener should belong
  * @param <T2> event to which this listener should listen
  */
@@ -26,7 +24,8 @@ public abstract class PaperListener<T1 extends PaperPlugin, T2 extends Event> im
     }
 
     /**
-     * Handles the event <b>T</b>. Needs to get annotated with {@link org.bukkit.event.EventHandler EventHandler}!
+     * Handles the event T2<br>
+     * Must be annotated with {@link org.bukkit.event.EventHandler EventHandler}
      *
      * @param event event to handle
      */

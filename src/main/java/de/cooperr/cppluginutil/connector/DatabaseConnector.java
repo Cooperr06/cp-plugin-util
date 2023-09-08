@@ -18,28 +18,33 @@ import java.util.logging.Level;
  */
 public class DatabaseConnector {
 
-    private final MysqlDataSource dataSource = new MysqlConnectionPoolDataSource();
     private final PaperPlugin plugin;
+
+    private final MysqlDataSource dataSource = new MysqlConnectionPoolDataSource();
 
     /**
      * Builds the data source and finally tests it
      *
      * @param plugin   plugin to which this connector should belong
-     * @param host     address to the database, if null default host will be used
-     * @param port     port to connect, if null default port will be used
+     * @param host     address to the database, if null the default host will be used
+     * @param port     port to connect, if null the default port will be used
      * @param database database to use
-     * @param user     user to be used for login
-     * @param password password to be used for login
+     * @param user     user to use for login
+     * @param password password to use for login
      */
-    public DatabaseConnector(@NotNull PaperPlugin plugin, @Nullable String host, @Nullable Integer port, @NotNull String database,
-                             @NotNull String user, @NotNull String password) {
+    public DatabaseConnector(@NotNull PaperPlugin plugin, @Nullable String host, @Nullable Integer port, @Nullable String database,
+                             @NotNull String user, @Nullable String password) {
         this.plugin = plugin;
 
         dataSource.setServerName(host == null ? ConnectionUrl.DEFAULT_HOST : host);
         dataSource.setPortNumber(port == null ? ConnectionUrl.DEFAULT_PORT : port);
-        dataSource.setDatabaseName(database);
+        if (database != null) {
+            dataSource.setDatabaseName(database);
+        }
         dataSource.setUser(user);
-        dataSource.setPassword(password);
+        if (password != null) {
+            dataSource.setPassword(password);
+        }
 
         testDataSource();
     }
@@ -70,6 +75,7 @@ public class DatabaseConnector {
             statement.execute();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to execute sql script \"%s\" with args \"%s\"".formatted(sql, args), e);
+            plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
     }
 
@@ -84,6 +90,7 @@ public class DatabaseConnector {
             setup = new String(inputStream.readAllBytes());
         } catch (IOException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to read sql file \"%s\"".formatted(file.getName()), e);
+            plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
 
         if (setup.split(";").length > 1) {
@@ -98,6 +105,7 @@ public class DatabaseConnector {
             statement.execute();
         } catch (SQLException e) {
             plugin.getLogger().log(Level.SEVERE, "Failed to execute sql file \"%s\"".formatted(file.getName()), e);
+            plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
     }
 

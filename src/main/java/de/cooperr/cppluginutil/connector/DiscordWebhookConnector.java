@@ -4,9 +4,7 @@ import de.cooperr.cppluginutil.base.PaperPlugin;
 import org.jetbrains.annotations.NotNull;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.logging.Level;
 
@@ -28,11 +26,10 @@ public class DiscordWebhookConnector {
     public DiscordWebhookConnector(@NotNull PaperPlugin plugin, @NotNull String webhookUrl) {
         this.plugin = plugin;
         try {
-            this.webhookUrl = new URL(webhookUrl);
-        } catch (MalformedURLException e) {
+            this.webhookUrl = new URI(webhookUrl).toURL();
+        } catch (URISyntaxException | MalformedURLException e) {
             this.webhookUrl = null;
             plugin.getLogger().log(Level.SEVERE, "Failed to connect to Discord Webhook", e);
-            plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
     }
 
@@ -60,7 +57,6 @@ public class DiscordWebhookConnector {
                 connection.disconnect();
             } catch (IOException e) {
                 plugin.getLogger().log(Level.SEVERE, "Failed to send message to Discord Webhook", e);
-                plugin.getServer().getPluginManager().disablePlugin(plugin);
             }
         });
     }
